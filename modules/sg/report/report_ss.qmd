@@ -1,9 +1,9 @@
 ---
 title: "Normal-Tumor Report"
-author: "Skygenic"
+author: "ss"
 format: 
   dashboard:
-    logo: skygenic.png
+    logo: ss.png
 params:
   input_annotation: 'data/HCC1395T_vs_HCC1395N.strelka.somatic_indels_snpEff.ann.vcf.gz'
 ---
