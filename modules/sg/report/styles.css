@@ -1,0 +1,4 @@
+table.dataTable td {
+    font-size: 10px; /* Adjust the font size as needed */
+    white-space: nowrap; /* Prevent text from wrapping */
+}

@@ -1,0 +1,125 @@
+---
+title: "Normal-Tumor Report"
+author: "Skygenic"
+format: 
+  dashboard:
+    logo: skygenic.png
+params:
+  input_annotation: 'data/HCC1395T_vs_HCC1395N.strelka.somatic_indels_snpEff.ann.vcf.gz'
+---
+
+## Row
+
+```{r}
+#| content: valuebox
+#| title: "Box 1"
+#| icon: pencil
+#| color: secondary
+
+list(
+  value = 100
+) 
+
+```
+
+```{r}
+#| content: valuebox
+#| title: "Box 2"
+#| icon: chat
+#| color: secondary
+
+list(
+  value = 100
+)
+
+```
+
+```{r}
+#| content: valuebox
+#| title: "Box 3"
+#| icon: trash
+#| color: secondary
+
+list(
+  value = 100
+)
+
+```
+
+## Row
+
+### Column {width="75%"}
+
+```{r}
+#| include: false
+
+library(vcfR)
+library(dplyr)
+library(DT)
+
+```
+
+```{r}
+
+annotated_vcf <- read.vcfR(
+  system.file("extdata", "pinf_sc50.vcf.gz", package = "pinfsc50"), verbose = FALSE)
+
+annotated_df <- vcfR2tidy(annotated_vcf, format_fields = c("GT", "DP"))
+
+```
+
+```{r}
+
+dna_file <- system.file("extdata", "pinf_sc50.fasta", package = "pinfsc50")
+dna <- ape::read.dna(dna_file, format = "fasta")
+
+#
+
+gff_file <- system.file("extdata", "pinf_sc50.gff", package = "pinfsc50")
+gff <- read.table(gff_file, sep="\t", quote="")
+
+```
+
+
+```{r}
+
+annotated_df <- annotated_df$fix %>%
+ as.data.frame()
+
+annotated_df <- annotated_df %>%
+  select(CHROM, POS, REF, ALT, QUAL, AF) %>%
+  filter(nchar(REF) < 5, nchar(ALT) < 5)
+
+```
+
+```{r}
+#| title: Variant calling
+
+datatable(annotated_df, options = list(
+    searching = TRUE,
+    rownames  = FALSE,
+    pageLength = 50,
+    lengthMenu = c(5, 5, 5, 5, 5, 5),
+    autoWidth = TRUE,
+    class = 'cell-border stripe'
+  ))
+
+```
+
+### Column {width="25%"}
+
+```{r}
+
+chrom <- create.chromR(name = 'Supercontig', vcf = annotated_vcf, seq = dna, ann = gff)
+
+plot(chrom)
+
+```
+
+```{r}
+
+plot(chrom)
+
+```
+
+

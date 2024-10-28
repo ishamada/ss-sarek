@@ -1,0 +1,154 @@
+---
+title: "Skygenic - Sarek Report"
+date: "2024-08-21"
+editor: visual
+format: 
+  html:
+    fig-width: 8
+    fig-height: 4
+    code-fold: true
+    lightbox: true
+params:
+  study: "Tumor-Normal matched"
+  disease: "Cancer"
+  input_annotation: 'data/HCC1395T_vs_HCC1395N.strelka.somatic_indels_snpEff.ann.vcf.gz'
+bibliography: references.bib
+---
+
+![](./logo2.png){fig-align="center"}
+
+```{r}
+#| include: false
+
+library(vcfR)
+library(dplyr)
+library(DT)
+library(HPO.db)
+library(trackViewer)
+
+```
+
+```{r}
+#| include: false
+
+# Loading vcf from params$input_annotation variable
+
+annotated_vcf <- read.vcfR(
+  system.file("extdata", "pinf_sc50.vcf.gz", package = "pinfsc50"), verbose = FALSE)
+
+annotated_df <- vcfR2tidy(annotated_vcf, format_fields = c("GT", "DP"))
+
+annotated_df <- annotated_df$fix %>%
+ as.data.frame()
+
+annotated_df <- annotated_df %>%
+  dplyr::select(CHROM, POS, REF, ALT, QUAL, AF) %>%
+  dplyr::filter(nchar(REF) < 5, nchar(ALT) < 5)
+
+```
+
+```{r}
+#| include: false
+
+doterm <- toTable(HPOTERM)
+
+```
+
+## Summary
+
+This report presents the variant calling analysis conducted on `{r params$study }`. In a total `{r total_variants }` variants were found in this study.
+
+### Pathogenic variants
+
+```{r}
+
+# All variants pathogenic variants in a DT table.
+
+```
+
+#### Variant description
+
+```{r}
+
+# Adding descriptions related to variants, including gene, protein function, and related diseases.
+
+```
+
+```{r}
+#| echo: false
+#| label: fig-lolliplot
+#| fig-cap: Simple demo R plot
+#| fig-align: center
+
+# Create dynamic lolliplots for the pathogenic variants
+
+features <- GRanges("chr1", IRanges(c(1, 501, 1001), 
+                                    width=c(120, 400, 405),
+                                    names=paste0("block", 1:3)),
+                    fill = c("#FF8833", "#51C6E6", "#DFA32D"),
+                    height = c(0.02, 0.05, 0.08))
+SNP <- c(10, 100, 105, 108, 400, 410, 420, 600, 700, 805, 840, 1400, 1402)
+sample.gr <- GRanges("chr1", IRanges(SNP, width=1, names=paste0("snp", SNP)),
+                     color = sample.int(6, length(SNP), replace=TRUE),
+                     score = sample.int(5, length(SNP), replace = TRUE))
+lolliplot(sample.gr, features)
+
+```
+
+@fig-lolliplot Description.
+
+::: callout-warning
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+:::
+
+### All variants
+
+```{r}
+#| title: Variant calling
+#| echo: false
+
+# All variants in that sample
+
+datatable(annotated_df, options = list(
+    searching = TRUE,
+    rownames  = FALSE,
+    pageLength = 10,
+    lengthMenu = c(5, 5, 5, 5, 5, 5),
+    autoWidth = TRUE,
+    class = 'cell-border stripe'
+  ))
+
+```
+
+## Methodology
+
+#### Method 1
+
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+
+#### Method 2
+
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+
+#### Method 3
+
+Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+
+### Variant classification
+
+Variants are categorized into *Pathogenic*, *Likely Pathogenic*, *Variant of Uncertain Significance*, *Likely Benign*, and *Benign* in accordance with guideline of American College of Medical Genetics and genomics (ACMG).
+
+| **ACMG Classification**                     | **Definition**                                                                                            | **Clinical Implication**                                                                                                |
+|------------------|-------------------------|-----------------------------|
+| **Pathogenic variant**                      | Variants that directly cause or significantly contribute to a disease or condition.                       | Strong evidence for disease association; may warrant clinical action or intervention.                                   |
+| **Likely Pathogenic variant**               | Variants with strong evidence suggesting disease association, but not definitive.                         | Likely associated with disease; further validation may be needed; may lead to clinical recommendations.                 |
+| **Variant of Uncertain Significance (VUS)** | Variants with insufficient evidence to classify as benign or pathogenic.                                  | Uncertain clinical impact; typically requires additional studies and monitoring; not used for clinical decisions alone. |
+| **Likely Benign**                           | Variants with some evidence suggesting they are not associated with disease, but not conclusively benign. | Generally not harmful; unlikely to contribute to disease; usually no clinical action required.                          |
+| **Benign**                                  | Variants that are not associated with disease and are considered harmless.                                | No clinical implications; these variants are common in the general population and are not linked to disease.            |
+
+\*Based on @Houge2022-fy.
+
+### References
+
+::: {#refs}
+:::
