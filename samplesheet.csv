@@ -1,3 +1,3 @@
 patient,status,sample,lane,fastq_1,fastq_2
-patient1,0,N,L,/home/islam/sarek-test-data/test_1.fastq.gz,/home/islam/sarek-test-data/test2_1.fastq.gz
-patient1,1,T,L,/home/islam/sarek-test-data/test_2.fastq.gz,/home/islam/sarek-test-data/test2_2.fastq.gz
+patient1,0,N,L,/home/ammar/Ammar/bioinfo/tester/test_1.fastq.gz
+patient1,1,T,L,/home/ammar/Ammar/bioinfo/tester/test_2.fastq.gz

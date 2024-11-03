@@ -22,7 +22,7 @@ include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_sare
 include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_sarek_pipeline'
 
 include { getGenomeAttribute      } from './subworkflows/local/utils_nfcore_sarek_pipeline'
-
+include { AMMARSAYSHEYAMMAR } from './subworkflows/local/ammarsaysheyammar.nf'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     GENOME PARAMETER VALUES
@@ -90,6 +90,7 @@ workflow {
     NFCORE_SAREK (
         PIPELINE_INITIALISATION.out.samplesheet
     )
+    AMMARSAYSHEYAMMAR()
 
     //
     // SUBWORKFLOW: Run completion tasks
